@@ -1,37 +1,38 @@
-# .github/workflows/pdf-builder.yml
 name: Generate PDF from HTML
 
-# 当代码推送到 main 分支时触发
+# 当代码推送到 main 或 master 分支时触发
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 获取仓库代码
+      # 1. 获取仓库代码 (升级到 v4)
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. 安装 Node.js 环境
+      # 2. 安装 Node.js 环境 (升级到 v4)
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # 3. 安装 Puppeteer 依赖
+      # 3. 初始化并安装 Puppeteer 依赖 (关键修复：先 init)
       - name: Install dependencies
-        run: npm install puppeteer
+        run: |
+          npm init -y
+          npm install puppeteer
 
-      # 4. 运行我们刚才写的脚本生成 PDF
+      # 4. 运行脚本生成 PDF
       - name: Generate PDF
         run: node generate-pdf.js
 
-      # 5. 将生成的 PDF 作为 Artifact（产物）上传，供你下载
+      # 5. 上传生成的 PDF 供下载 (升级到 v4)
       - name: Upload PDF
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Museum-Proposal-PDF
           path: Proposal.pdf
